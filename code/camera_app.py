@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
-from keras.models import load_model
+from tensorflow.keras.models import load_model
+from threading import Thread
 
 model = load_model("model_final.keras")
 
@@ -9,6 +10,11 @@ frames = []
 cooldown = 0
 
 classes = np.load("encoder_classes.npy", allow_pickle=True)[0]
+
+def predict_model(model_input):
+  output = model.predict(model_input[None,:])[0]
+  print(output, np.argmax(output), classes[np.argmax(output)], flush=True)
+  
 
 while True:
     ret, frame = cap.read()
@@ -25,11 +31,11 @@ while True:
     if len(frames) > 36:
         frames.pop(0)
 
-    if len(frames) == 36:
+    if len(frames) == 36 and cooldown == 0:
         model_input = np.asarray(frames)[None,:]
         print(model_input.shape)
-        output = model.predict(model_input)[0]
-        print(output, np.argmax(output), classes[np.argmax(output)])
+        run_thread = Thread(target=predict_model, args=(model_input))
+        run_thread.start()
         cooldown = 36
     
     if cooldown > 0:
