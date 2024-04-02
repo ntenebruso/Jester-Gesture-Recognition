@@ -1,14 +1,16 @@
-import pandas as pd
-import tensorflow as tf
-import numpy as np
 from glob import glob
+
 import keras
+import numpy as np
+import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
+
 
 class DataGenerator(keras.utils.Sequence):
     encoder = OneHotEncoder(sparse_output=False)
 
-    def __init__(self, file_path, base_dir, batch_size = 2, frame_count=36, image_dimensions=(256, 256), n_channels=3, n_classes=10, validation=False):
+    def __init__(self, file_path, base_dir, batch_size=2, frame_count=36, image_dimensions=(256, 256), n_channels=3,
+                 n_classes=10, validation=False):
         self.batch_size = batch_size
         self.base_dir = base_dir
         self.df = pd.read_csv(file_path, sep=";")
@@ -22,7 +24,7 @@ class DataGenerator(keras.utils.Sequence):
             np.save("encoder_classes.npy", self.encoder.categories_)
 
         self.on_epoch_end()
-    
+
     def __len__(self):
         return self.df.shape[0] // self.batch_size
 
@@ -36,18 +38,19 @@ class DataGenerator(keras.utils.Sequence):
             # print(glob(self.base_dir + str(self.df.loc[item, "id"]) + "/*.jpg"))
             files_list = self.standardize_frame_count(glob(self.base_dir + str(self.df.loc[item, "id"]) + "/*.jpg"))
             for j, filename in enumerate(files_list):
-                x[i, j] = keras.preprocessing.image.img_to_array(keras.preprocessing.image.load_img(filename, color_mode="grayscale", target_size=self.image_dimensions))
+                x[i, j] = keras.preprocessing.image.img_to_array(
+                    keras.preprocessing.image.load_img(filename, color_mode="grayscale",
+                                                       target_size=self.image_dimensions))
             y.append(self.df.loc[item, "label"])
-        
+
         y = np.asarray(y)
         encoded = self.encoder.transform(y.reshape(-1, 1))
         return x, encoded
 
-    
     def on_epoch_end(self):
         self.indexes = np.arange(self.df.shape[0])
         np.random.shuffle(self.indexes)
-        
+
     def standardize_frame_count(self, files):
         shape = len(files)
 
@@ -59,5 +62,5 @@ class DataGenerator(keras.utils.Sequence):
         elif shape > self.frame_count:
             num_to_remove = shape - self.frame_count
             return files[num_to_remove:]
-        
+
         return files

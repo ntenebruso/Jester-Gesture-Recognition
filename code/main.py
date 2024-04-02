@@ -1,7 +1,7 @@
+import keras
+
 from lib.generator import DataGenerator
 from lib.resnet import Resnet3DBuilder
-import keras
-import tensorflow as tf
 
 gesture_list = ["Swiping Left", "Swiping Right", "Swiping Down", "Swiping Up", "No gesture"]
 
@@ -14,7 +14,8 @@ params = {
 }
 
 train_gen = DataGenerator(file_path="./annotations/train_formatted.csv", base_dir="../data/20bn-jester/", **params)
-validation_gen = DataGenerator(file_path="./annotations/validation_formatted.csv", base_dir="../data/20bn-jester/", validation=True, **params)
+validation_gen = DataGenerator(file_path="./annotations/validation_formatted.csv", base_dir="../data/20bn-jester/",
+                               validation=True, **params)
 
 model = Resnet3DBuilder.build_resnet_101(input_shape=(36, 56, 56, 3), num_outputs=len(gesture_list))
 model.summary()

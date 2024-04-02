@@ -1,6 +1,4 @@
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
-import numpy as np
 
 gesture_list = ["Swiping Left", "Swiping Right", "Swiping Down", "Swiping Up", "No gesture"]
 
