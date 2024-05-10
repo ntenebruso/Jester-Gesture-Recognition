@@ -4,6 +4,8 @@ Using the Jester Gesture Recognition Dataset.
 
 ## How to use
 
+*Before running any code, ensure that all dependencies are installed from `requirements.txt`!*
+
 ### Train the dataset
 
 To train Jester using ResNet101, follow the steps below:

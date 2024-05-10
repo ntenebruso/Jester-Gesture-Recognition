@@ -6,7 +6,7 @@ from lib.resnet import Resnet3DBuilder
 gesture_list = ["Swiping Left", "Swiping Right", "Swiping Down", "Swiping Up", "No gesture"]
 
 params = {
-    "batch_size": 56,
+    "batch_size": 128,
     "n_channels": 3,
     "image_dimensions": (56, 56),
     "frame_count": 36,
